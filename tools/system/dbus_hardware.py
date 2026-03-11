@@ -80,6 +80,24 @@ def setVolume(percentage: int) -> bool:
         return False
 
 
+def adjustVolume(percentage: int)->bool:
+    if abs(percentage) > 100:
+        percentage = 0 if percentage < 0 else 100
+    
+    try:
+        if percentage > 0:
+            adjust = f"{percentage}%+"
+        else:
+            adjust = f"{abs(percentage)}%-"
+        
+        subprocess.run(["wpctl", "set-volume", "@DEFAULT_AUDIO_SINK@", adjust])
+        logging.info(f"Adjusted system volume by {percentage}")
+        return True
+    
+    except Exception as e:
+        logging.error(f"Could not adjust volume. {e}")
+        return False
+    
 
 
 if __name__ == "__main__":
@@ -88,11 +106,11 @@ if __name__ == "__main__":
     current = getBrightness()
     print(f"Current System Brightness is : {current}%")
 
-    print("Dimming screen by 10%")
-    adjustBrightness(-10)
+    print("Dimming screen by 50%")
+    adjustBrightness(-50)
 
     newCurrent = getBrightness()
     print(f"New System brightness is : {newCurrent}%")
 
-    print(f"Setting the volume to 80%")
-    setVolume(80)
+    print(f"Adjusting the volume by 10%")
+    adjustVolume(60)
